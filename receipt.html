@@ -454,7 +454,32 @@
 
     @media (max-width: 768px) {
       .info-grid { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
+      .nav-links {
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        margin-top: 0.75rem;
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .nav-links li {
+        flex: 1 1 auto;
+        text-align: center;
+      }
+      
+      .nav-links a {
+        display: block;
+        padding: 0.5rem 0.25rem;
+        font-size: 0.8rem;
+      }
+      
+      .header-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-bottom: 0.75rem;
+      }
     }
   </style>
 </head>
@@ -580,7 +605,7 @@
   </div>
 
   <footer class="site-footer">
-    Ironclad Auto Works &mdash; Licensed Mechanical Repair &mdash; Est. 2008
+    យានដ្ឋានដើមមាស ១៦៨ — ផ្លូវ ២៧១ ភ្នំពេញ (ក្បែរបឹងទំពុន)
   </footer>
 
   <script>

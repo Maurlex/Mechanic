@@ -754,7 +754,32 @@
       .payment-options { grid-template-columns: 1fr; }
       .payment-option label { border-right: none; border-bottom: var(--border-thin); }
       .payment-option:last-child label { border-bottom: none; }
-      .nav-links { display: none; }
+      .nav-links {
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        margin-top: 0.75rem;
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .nav-links li {
+        flex: 1 1 auto;
+        text-align: center;
+      }
+      
+      .nav-links a {
+        display: block;
+        padding: 0.5rem 0.25rem;
+        font-size: 0.8rem;
+      }
+      
+      .header-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-bottom: 0.75rem;
+      }
     }
   </style>
 </head>
@@ -918,21 +943,8 @@
   </main>
 
   <footer class="site-footer">
-    Ironclad Auto Works &mdash; Licensed Mechanical Repair &mdash; Est. 2008
+    យានដ្ឋានដើមមាស ១៦៨ — ផ្លូវ ២៧១ ភ្នំពេញ (ក្បែរបឹងទំពុន)
   </footer>
-
-  <!-- Floating Emergency Chat -->
-  <div class="emergency-chat">
-    <div class="chat-menu" id="chatMenu">
-      <a href="https://t.me/ironcladautoworks" target="_blank" rel="noopener">
-        <span class="channel">Telegram</span> — Roadside Assist
-      </a>
-      <a href="https://wa.me/85515282896" target="_blank" rel="noopener">
-        <span class="channel">WhatsApp</span> — Emergency Line
-      </a>
-    </div>
-    <button class="chat-toggle" id="chatToggle" aria-label="Open emergency chat">Emergency Chat</button>
-  </div>
 
   <script>
     /* ══════════════════════════════════════════════════════════════
@@ -965,6 +977,8 @@
     const estimateTotalRiel = document.getElementById('estimateTotalRiel');
     const presetSuggestions = document.getElementById('presetSuggestions');
     let selectedServices = [];
+    let activePresetPanel = null;
+    let activePresetInput = null;
 
     function getStoredPresets() {
       try {
@@ -983,14 +997,99 @@
       } catch (_) {}
     }
 
-    function renderPresetSuggestions() {
+    function closePresetSuggestions() {
+      if (activePresetPanel) {
+        activePresetPanel.remove();
+        activePresetPanel = null;
+      }
+      activePresetInput = null;
+    }
+
+    function renderPresetSuggestions(targetInput = null) {
+      if (activePresetPanel) {
+        activePresetPanel.remove();
+      }
+
+      if (!targetInput) {
+        activePresetInput = null;
+        activePresetPanel = null;
+        return;
+      }
+
       const merged = [...new Set([...PRESET_SUGGESTIONS, ...getStoredPresets()])];
-      presetSuggestions.innerHTML = '';
+      const customPresets = getStoredPresets();
+      const panel = document.createElement('div');
+      panel.style.position = 'fixed';
+      panel.style.zIndex = '2000';
+      panel.style.background = 'var(--slate)';
+      panel.style.border = '1px solid var(--slate-mid)';
+      panel.style.boxShadow = '0 10px 24px rgba(0,0,0,0.3)';
+      panel.style.maxHeight = '220px';
+      panel.style.overflowY = 'auto';
+      panel.style.padding = '0.25rem 0';
+      panel.style.minWidth = '220px';
+
+      const rect = targetInput.getBoundingClientRect();
+      panel.style.left = rect.left + window.scrollX + 'px';
+      panel.style.top = rect.bottom + window.scrollY + 4 + 'px';
+      panel.style.width = Math.max(rect.width, 220) + 'px';
+
       merged.forEach(value => {
-        const option = document.createElement('option');
-        option.value = value;
-        presetSuggestions.appendChild(option);
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.style.display = 'flex';
+        row.style.alignItems = 'center';
+        row.style.justifyContent = 'space-between';
+        row.style.width = '100%';
+        row.style.padding = '0.55rem 0.75rem';
+        row.style.border = 'none';
+        row.style.background = 'transparent';
+        row.style.color = 'var(--white)';
+        row.style.textAlign = 'left';
+        row.style.cursor = 'pointer';
+        row.style.fontFamily = 'Barlow, sans-serif';
+        row.style.fontSize = '0.92rem';
+
+        const label = document.createElement('span');
+        label.textContent = value;
+        row.appendChild(label);
+
+        if (customPresets.includes(value)) {
+          const removeBtn = document.createElement('span');
+          removeBtn.textContent = '×';
+          removeBtn.style.color = 'var(--amber)';
+          removeBtn.style.fontSize = '1rem';
+          removeBtn.style.fontWeight = '700';
+          removeBtn.style.marginLeft = '0.75rem';
+          removeBtn.style.cursor = 'pointer';
+          removeBtn.addEventListener('click', event => {
+            event.stopPropagation();
+            const updated = customPresets.filter(item => item !== value);
+            savePresets(updated);
+            renderPresetSuggestions(targetInput);
+          });
+          row.appendChild(removeBtn);
+        }
+
+        row.addEventListener('click', () => {
+          targetInput.value = value;
+          updateTotals();
+          closePresetSuggestions();
+        });
+
+        row.addEventListener('mouseenter', () => {
+          row.style.background = 'var(--slate-mid)';
+        });
+        row.addEventListener('mouseleave', () => {
+          row.style.background = 'transparent';
+        });
+
+        panel.appendChild(row);
       });
+
+      document.body.appendChild(panel);
+      activePresetPanel = panel;
+      activePresetInput = targetInput;
     }
 
     function addPresetIfNeeded(value) {
@@ -1000,7 +1099,7 @@
       if (!existing.includes(trimmed)) {
         const updated = [...existing, trimmed];
         savePresets(updated);
-        renderPresetSuggestions();
+        renderPresetSuggestions(activePresetInput);
       }
     }
 
@@ -1014,7 +1113,20 @@
       nameInput.placeholder = 'ឈ្មោះគ្រឿងបន្លាស់ ឬសេវាកម្ម';
       nameInput.ariaLabel = 'Part name or service description';
       nameInput.value = name;
-      nameInput.setAttribute('list', 'presetSuggestions');
+      nameInput.setAttribute('autocomplete', 'off');
+      nameInput.addEventListener('focus', () => {
+        renderPresetSuggestions(nameInput);
+      });
+      nameInput.addEventListener('input', () => {
+        renderPresetSuggestions(nameInput);
+      });
+      nameInput.addEventListener('blur', () => {
+        window.setTimeout(() => {
+          if (activePresetInput === nameInput) {
+            closePresetSuggestions();
+          }
+        }, 150);
+      });
 
       const priceInput = document.createElement('input');
       priceInput.type = 'number';
@@ -1072,6 +1184,15 @@
 
     estimatorRows.addEventListener('input', updateTotals);
     estimatorRows.addEventListener('change', updateTotals);
+    document.addEventListener('click', event => {
+      if (activePresetPanel && activePresetInput) {
+        const clickedInsidePanel = activePresetPanel.contains(event.target);
+        const clickedInsideInput = activePresetInput.contains(event.target);
+        if (!clickedInsidePanel && !clickedInsideInput) {
+          closePresetSuggestions();
+        }
+      }
+    });
     renderPresetSuggestions();
     updateTotals();
 
