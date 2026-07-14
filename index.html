@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>យានដ្ឋានដើមមាស ១៦៨ — Book Repair</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --charcoal: #1c1c1e;
+      --slate: #3a3a3c;
+      --slate-mid: #5c5c5e;
+      --steel: #d4d4d6;
+      --steel-light: #ececee;
+      --white: #f7f7f8;
+      --amber: #c47a00;
+      --amber-dark: #9a6000;
+      --border: 2px solid var(--slate);
+      --border-thin: 1px solid var(--slate-mid);
+    }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--charcoal);
+      color: var(--white);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      border-bottom: var(--border);
+      background: var(--charcoal);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .logo-mark {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.75rem;
+      color: var(--amber);
+      border: 2px solid var(--amber);
+      padding: 0.1rem 0.45rem;
+      line-height: 1;
+    }
+
+    .logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--steel);
+      text-decoration: none;
+      padding: 0.5rem 1.25rem;
+      border: var(--border-thin);
+      border-left: none;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-links li:first-child a { border-left: var(--border-thin); }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: var(--amber);
+      color: var(--charcoal);
+      border-color: var(--amber);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      border-bottom: var(--border);
+      background: var(--slate);
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: end;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 0.95;
+      color: var(--white);
+    }
+
+    .hero h1 span { color: var(--amber); }
+
+    .hero-meta {
+      border-left: 4px solid var(--amber);
+      padding-left: 1.25rem;
+    }
+
+    .hero-meta p {
+      color: var(--steel);
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-hours {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.35rem;
+      border-bottom: 3px solid var(--amber);
+      display: inline-block;
+      padding-bottom: 0.25rem;
+    }
+
+    .section-desc {
+      color: var(--steel);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Price Estimator Builder ── */
+    .estimator-grid {
+      border: var(--border);
+      background: var(--charcoal);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .estimator-table {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .estimator-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 140px auto;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .estimator-input {
+      width: 100%;
+      padding: 0.7rem 0.8rem;
+      background: var(--slate);
+      border: var(--border-thin);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .estimator-price {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    .estimator-price::-webkit-outer-spin-button,
+    .estimator-price::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+      display: none;
+    }
+
+    .estimator-input::placeholder { color: var(--slate-mid); }
+
+    .estimator-input:focus {
+      border-color: var(--amber);
+      box-shadow: 0 0 0 2px rgba(196, 122, 0, 0.2);
+    }
+
+    .estimator-price {
+      text-align: right;
+    }
+
+    .estimator-remove,
+    .estimator-add {
+      border: none;
+      cursor: pointer;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.7rem 0.9rem;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .estimator-remove {
+      background: transparent;
+      color: var(--steel);
+      border: var(--border-thin);
+    }
+
+    .estimator-remove:hover {
+      background: #4e2b2b;
+      color: var(--white);
+      border-color: #7d3b3b;
+    }
+
+    .estimator-add {
+      width: 100%;
+      background: var(--amber);
+      color: var(--charcoal);
+    }
+
+    .estimator-add:hover {
+      background: var(--amber-dark);
+      color: var(--white);
+    }
+
+    .estimate-total-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      border: var(--border);
+      padding: 1rem 1.25rem;
+      background: var(--slate);
+      margin-bottom: 3rem;
+    }
+
+    .estimate-total-bar .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .estimate-total-bar span:first-child {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 1rem;
+    }
+
+    .estimate-total-bar .total-amount {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 2rem;
+      color: var(--amber);
+    }
+
+    .estimate-total-bar .total-riel {
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.95rem;
+      color: var(--steel-light);
+    }
+
+    /* ── Form ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .form-section {
+      border: var(--border);
+      padding: 1.5rem;
+      background: var(--charcoal);
+    }
+
+    .form-section.full-width { grid-column: 1 / -1; }
+
+    .form-section h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: var(--border-thin);
+    }
+
+    .field {
+      margin-bottom: 1rem;
+    }
+
+    .field label {
+      display: block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--steel);
+      margin-bottom: 0.35rem;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      background: var(--slate);
+      border: var(--border-thin);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--amber);
+    }
+
+    .field input::placeholder { color: var(--slate-mid); }
+
+    /* ── Payment Selection ── */
+    .payment-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: var(--border-thin);
+    }
+
+    .payment-option {
+      position: relative;
+    }
+
+    .payment-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .payment-option label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1.25rem 0.75rem;
+      border-right: var(--border-thin);
+      cursor: pointer;
+      background: var(--charcoal);
+      transition: background 0.15s;
+      text-align: center;
+      height: 100%;
+    }
+
+    .payment-option:last-child label { border-right: none; }
+
+    .payment-option input:checked + label {
+      background: var(--amber);
+      color: var(--charcoal);
+    }
+
+    .payment-option input:checked + label .pay-icon { filter: none; }
+
+    .pay-icon {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .pay-desc {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .merchant-qr-manager {
+      margin-top: 1rem;
+      border: var(--border-thin);
+      padding: 1rem;
+      background: var(--charcoal);
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .merchant-qr-manager h3 {
+      font-size: 1rem;
+      color: var(--amber);
+      margin-bottom: 0.25rem;
+    }
+
+    .merchant-qr-manager p {
+      color: var(--steel);
+      font-size: 0.9rem;
+    }
+
+    .merchant-qr-manager .qr-manager-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: end;
+    }
+
+    .merchant-qr-manager .field {
+      margin-bottom: 0;
+      flex: 1 1 220px;
+      min-width: 220px;
+    }
+
+    .merchant-qr-manager .field label {
+      font-size: 0.75rem;
+    }
+
+    .merchant-qr-manager .btn-primary,
+    .merchant-qr-manager .btn-secondary {
+      padding: 0.7rem 1rem;
+      font-size: 0.95rem;
+    }
+
+    .merchant-qr-manager .qr-preview {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+      border: var(--border-thin);
+      padding: 0.85rem;
+      background: var(--slate);
+    }
+
+    .merchant-qr-manager .qr-preview img {
+      max-width: 180px;
+      width: 100%;
+      border: var(--border-thin);
+      background: var(--white);
+      padding: 0.35rem;
+      display: block;
+    }
+
+    .merchant-qr-manager .qr-preview-caption {
+      color: var(--steel);
+      font-size: 0.9rem;
+    }
+
+    .merchant-qr-manager .qr-create-panel {
+      display: none;
+      gap: 0.75rem;
+      border: var(--border-thin);
+      padding: 0.85rem;
+      background: var(--slate);
+    }
+
+    .merchant-qr-manager .qr-create-panel.visible {
+      display: grid;
+    }
+
+    .merchant-qr-manager .qr-alert {
+      display: none;
+      padding: 0.7rem 0.8rem;
+      background: #1a3a1a;
+      border: 1px solid #2d6b2d;
+      color: #8fd48f;
+      font-size: 0.9rem;
+    }
+
+    .merchant-qr-manager .qr-alert.visible { display: block; }
+
+    .qr-panel {
+      display: none;
+      margin-top: 1rem;
+      border: var(--border-thin);
+      padding: 1rem;
+      background: var(--slate);
+      text-align: center;
+    }
+
+    .qr-panel.visible { display: block; }
+
+    .qr-panel img {
+      max-width: 200px;
+      width: 100%;
+      border: var(--border-thin);
+      background: var(--white);
+      padding: 0.5rem;
+    }
+
+    .qr-panel p {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--steel);
+    }
+
+    .qr-image-wrap {
+      display: inline-block;
+      position: relative;
+    }
+
+    .qr-image-wrap img {
+      max-width: 200px;
+      width: 100%;
+      border: var(--border-thin);
+      background: var(--white);
+      padding: 0.5rem;
+      display: block;
+    }
+
+    /* Fallback shown in place of the <img> if the QR asset is missing */
+    .qr-fallback-label { display: none; }
+
+    .qr-image-wrap.qr-fallback {
+      min-width: 200px;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--charcoal);
+      color: var(--amber);
+      border: 2px solid var(--amber);
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .qr-image-wrap.qr-fallback .qr-fallback-label {
+      display: block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1.4;
+    }
+
+    /* ── Cash Payment Block ── */
+    .cash-panel {
+      display: none;
+      margin-top: 1rem;
+      border: 2px solid var(--amber);
+      padding: 1.5rem 1rem;
+      background: var(--amber);
+      text-align: center;
+    }
+
+    .cash-panel.visible { display: block; }
+
+    .cash-panel p {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--charcoal);
+    }
+
+    /* ── Submit ── */
+    .submit-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.85rem 2rem;
+      background: var(--amber);
+      color: var(--charcoal);
+      border: 2px solid var(--amber);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--amber);
+    }
+
+    .btn-secondary {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.85rem 1.5rem;
+      background: transparent;
+      color: var(--steel);
+      border: var(--border-thin);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .form-msg {
+      font-size: 0.9rem;
+      padding: 0.65rem 1rem;
+      border: var(--border-thin);
+      display: none;
+    }
+
+    .form-msg.success {
+      display: block;
+      background: #1a3a1a;
+      border-color: #2d6b2d;
+      color: #8fd48f;
+    }
+
+    .form-msg.error {
+      display: block;
+      background: #3a1a1a;
+      border-color: #6b2d2d;
+      color: #d48f8f;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      border-top: var(--border);
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--slate-mid);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Floating Emergency Chat ── */
+    .emergency-chat {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+    }
+
+    .chat-toggle {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.75rem 1.25rem;
+      background: #b91c1c;
+      color: var(--white);
+      border: 2px solid #991b1b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .chat-toggle::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--white);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .chat-menu {
+      display: none;
+      flex-direction: column;
+      border: var(--border);
+      background: var(--charcoal);
+      min-width: 200px;
+    }
+
+    .chat-menu.open { display: flex; }
+
+    .chat-menu a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--white);
+      text-decoration: none;
+      padding: 0.85rem 1.25rem;
+      border-bottom: var(--border-thin);
+      transition: background 0.15s;
+    }
+
+    .chat-menu a:last-child { border-bottom: none; }
+
+    .chat-menu a:hover { background: var(--slate); }
+
+    .chat-menu a .channel { color: var(--amber); }
+
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .payment-options { grid-template-columns: 1fr; }
+      .payment-option label { border-right: none; border-bottom: var(--border-thin); }
+      .payment-option:last-child label { border-bottom: none; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark">168</span>
+        <span class="logo-text">យានដ្ឋានដើមមាស ១៦៨</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Book Repair</a></li>
+        <li><a href="dashboard.html">Track Status</a></li>
+        <li><a href="receipt.html">Receipt</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>Get Your Car<br><span>Back on the Road.</span></h1>
+      <div class="hero-meta">
+        <p>ទទួលជួសជុលរថយន្តគ្រប់ប្រភេទ ឱ្យដំណើរការឡើងវិញ។ សេវាកម្មជួសជុលផ្នែកមេកានិចទូទៅពេញលេញ។ ធ្វើការដោយម៉ត់ចត់ ត្រឹមត្រូវ និងមានទំនួលខុសត្រូវខ្ពស់លើរថយន្តរបស់អ្នក។</p>
+        <p class="hero-hours">ចន្ទ–សៅរ៍ 7:00 ព្រឹក – 7:00 ល្ងាច | ផ្លូវ ២៧១ ភ្នំពេញ (ក្បែរបឹងទំពុន)</p>
+      </div>
+    </div>
+  </section>
+
+  <main class="container">
+
+    <!-- Price Estimator -->
+    <h2 class="section-title">Service Price Estimator</h2>
+    <p class="section-desc">Select services below. Totals update live — final invoice may vary after inspection.</p>
+
+    <div class="estimator-grid" id="estimatorGrid">
+      <datalist id="presetSuggestions"></datalist>
+      <div class="estimator-table" id="estimatorRows">
+        <div class="estimator-row">
+          <input type="text" class="estimator-input estimator-name" placeholder="ឈ្មោះគ្រឿងបន្លាស់ ឬសេវាកម្ម" aria-label="Part name or service description" list="presetSuggestions">
+          <input type="number" class="estimator-input estimator-price price-input" step="0.01" min="0" placeholder="តម្លៃ $" aria-label="Price">
+          <button type="button" class="estimator-remove" data-action="remove-row">លុប</button>
+        </div>
+      </div>
+      <button type="button" class="estimator-add" id="addEstimatorRow">ថែមសេវាកម្ម/គ្រឿងបន្លាស់</button>
+    </div>
+    <div class="estimate-total-bar">
+      <div class="total-row">
+        <span>Estimated Total</span>
+        <span class="total-amount" id="estimateTotal">$0.00</span>
+      </div>
+      <div class="total-row">
+        <span>សរុបជាលុយរៀល</span>
+        <span class="total-riel" id="estimateTotalRiel">ឬសរុប៖ 0 ៛</span>
+      </div>
+    </div>
+
+    <!-- Intake Form -->
+    <form id="intakeForm" style="margin-top: 3rem;">
+      <div class="form-grid">
+
+        <div class="form-section">
+          <h2>Customer Intake</h2>
+          <div class="field">
+            <label for="customerName">Full Name</label>
+            <input type="text" id="customerName" name="customerName" placeholder="John Doe" required>
+          </div>
+          <div class="field">
+            <label for="customerPhone">Phone Number</label>
+            <input type="tel" id="customerPhone" name="customerPhone" placeholder="015 282 896 / 092 282 896" required>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2>Vehicle Details</h2>
+          <div class="field">
+            <label for="carModel">Car Model</label>
+            <input type="text" id="carModel" name="carModel" placeholder="Toyota Camry 2019" required>
+          </div>
+          <div class="field">
+            <label for="plateNumber">Plate Number</label>
+            <input type="text" id="plateNumber" name="plateNumber" placeholder="2A-1234" required style="text-transform: uppercase;">
+          </div>
+          <div class="field">
+            <label for="workshopLabel">Custom Workshop Label / Location</label>
+            <input type="text" id="workshopLabel" name="workshopLabel" placeholder="Phnom Penh - Bay 2 or Customer Floor 1">
+          </div>
+        </div>
+
+        <div class="form-section full-width">
+          <h2>Payment Method</h2>
+          <div class="payment-options">
+            <div class="payment-option">
+              <input type="radio" id="payAba" name="paymentMethod" value="ABA Bank" checked>
+              <label for="payAba">
+                <span class="pay-icon">ABA Bank</span>
+                <span class="pay-desc">Scan QR to pay</span>
+              </label>
+            </div>
+            <div class="payment-option">
+              <input type="radio" id="payAcleda" name="paymentMethod" value="Acleda">
+              <label for="payAcleda">
+                <span class="pay-icon">Acleda</span>
+                <span class="pay-desc">Bank transfer</span>
+              </label>
+            </div>
+            <div class="payment-option">
+              <input type="radio" id="payCash" name="paymentMethod" value="Cash">
+              <label for="payCash">
+                <span class="pay-icon">Cash</span>
+                <span class="pay-desc">Pay at counter</span>
+              </label>
+            </div>
+          </div>
+          <div class="merchant-qr-manager">
+            <h3>ក្រដាសគ្រប់គ្រងគណនី QR ធនាគារ</h3>
+            <p>ជ្រើសរើសគណនីដែលមានស្រាប់ ឬបង្កើតគណនីថ្មីសម្រាប់ការបង្ហាញ QR នៅលើវិក្កយបត្រ។</p>
+            <div class="qr-manager-grid">
+              <div class="field">
+                <label for="activeQrSelect">គណនីដែលបានរក្សាទុក</label>
+                <select id="activeQrSelect" name="activeQrSelect"></select>
+              </div>
+              <button type="button" class="btn-secondary" id="deleteQrAccountBtn">លុបគណនី / Delete Account</button>
+              <button type="button" class="btn-secondary" id="toggleQrCreateBtn">+ បង្កើត ឬប្តូរឈ្មោះគណនីថ្មី / Create New Account Profile</button>
+            </div>
+            <div class="qr-preview" id="qrPreviewPanel">
+              <img id="qrPreviewImage" alt="Selected QR Preview" style="display: none;">
+              <div class="qr-preview-caption" id="qrPreviewCaption">ជ្រើសរើស ឬបង្កើតគណនីថ្មី...</div>
+            </div>
+            <div class="qr-create-panel" id="qrCreatePanel">
+              <div class="field">
+                <label for="qrCustomName">ឈ្មោះគណនីថ្មី</label>
+                <input type="text" id="qrCustomName" name="qrCustomName" placeholder="ABA វីរៈ ឬគណនីវេរលុយហាង">
+              </div>
+              <div class="field">
+                <label for="qrFileInput">រូបភាព QR ថ្មី</label>
+                <input type="file" id="qrFileInput" name="qrFileInput" accept="image/*">
+              </div>
+              <button type="button" class="btn-primary" id="saveQrBtn">រក្សាទុកកូដស្កេន / Save QR Code</button>
+            </div>
+            <div class="qr-alert" id="qrSaveAlert">រក្សាទុកកូដស្កេនដោយជោគជ័យ!</div>
+          </div>
+          <div class="qr-panel visible" id="qrPanel"></div>
+          <div class="cash-panel" id="cashPanel">
+            <p>💵 PAYMENT TO BE COLLECTED IN CASH AT FRONT DESK</p>
+          </div>
+        </div>
+
+        <div class="form-section full-width">
+          <h2>Submit Booking</h2>
+          <div class="submit-row">
+            <button type="submit" class="btn-primary">Confirm Intake</button>
+            <a href="dashboard.html" class="btn-secondary">Track Existing Repair</a>
+            <div class="form-msg" id="formMsg"></div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+
+  </main>
+
+  <footer class="site-footer">
+    Ironclad Auto Works &mdash; Licensed Mechanical Repair &mdash; Est. 2008
+  </footer>
+
+  <!-- Floating Emergency Chat -->
+  <div class="emergency-chat">
+    <div class="chat-menu" id="chatMenu">
+      <a href="https://t.me/ironcladautoworks" target="_blank" rel="noopener">
+        <span class="channel">Telegram</span> — Roadside Assist
+      </a>
+      <a href="https://wa.me/85515282896" target="_blank" rel="noopener">
+        <span class="channel">WhatsApp</span> — Emergency Line
+      </a>
+    </div>
+    <button class="chat-toggle" id="chatToggle" aria-label="Open emergency chat">Emergency Chat</button>
+  </div>
+
+  <script>
+    /* ══════════════════════════════════════════════════════════════
+       DATA FLOW: index.html → localStorage → dashboard / receipt
+       ══════════════════════════════════════════════════════════════
+
+       When the intake form is submitted, we build a "repairOrder" object
+       and save it to localStorage under two keys:
+
+         1. "ironclad_activeRepairs"  — an ARRAY of all repair orders.
+            Dashboard reads this array and filters by plate number.
+
+         2. "ironclad_currentBooking" — the SINGLE most-recent booking.
+            Receipt page reads this to populate the printable invoice.
+
+       This means data survives page navigation with zero server calls.
+       Both dashboard.html and receipt.html read from the same store.
+    ══════════════════════════════════════════════════════════════ */
+
+    const STORAGE_KEY_ALL   = 'ironclad_activeRepairs';
+    const STORAGE_KEY_LAST  = 'ironclad_currentBooking';
+    const STORAGE_KEY_PRESETS = 'dm168_customPresets';
+    const STORAGE_KEY_QR_WALLET = 'dm168_qr_wallet';
+    const PRESET_SUGGESTIONS = ['ដូរប្រេងម៉ាស៊ីន', 'ដូរស្បែកហ្វ្រាំង', 'ដូរអាគុយ', 'បញ្ចូលហ្គាសម៉ាស៊ីនត្រជាក់'];
+
+    // ── Dynamic itemized estimator ──
+    const estimatorRows = document.getElementById('estimatorRows');
+    const addEstimatorRowBtn = document.getElementById('addEstimatorRow');
+    const estimateTotal = document.getElementById('estimateTotal');
+    const estimateTotalRiel = document.getElementById('estimateTotalRiel');
+    const presetSuggestions = document.getElementById('presetSuggestions');
+    let selectedServices = [];
+
+    function getStoredPresets() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY_PRESETS);
+        if (!stored) return [];
+        const parsed = JSON.parse(stored);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (_) {
+        return [];
+      }
+    }
+
+    function savePresets(presets) {
+      try {
+        localStorage.setItem(STORAGE_KEY_PRESETS, JSON.stringify(presets));
+      } catch (_) {}
+    }
+
+    function renderPresetSuggestions() {
+      const merged = [...new Set([...PRESET_SUGGESTIONS, ...getStoredPresets()])];
+      presetSuggestions.innerHTML = '';
+      merged.forEach(value => {
+        const option = document.createElement('option');
+        option.value = value;
+        presetSuggestions.appendChild(option);
+      });
+    }
+
+    function addPresetIfNeeded(value) {
+      const trimmed = value.trim();
+      if (!trimmed) return;
+      const existing = getStoredPresets();
+      if (!existing.includes(trimmed)) {
+        const updated = [...existing, trimmed];
+        savePresets(updated);
+        renderPresetSuggestions();
+      }
+    }
+
+    function createEstimatorRow(name = '', price = '') {
+      const row = document.createElement('div');
+      row.className = 'estimator-row';
+
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.className = 'estimator-input estimator-name';
+      nameInput.placeholder = 'ឈ្មោះគ្រឿងបន្លាស់ ឬសេវាកម្ម';
+      nameInput.ariaLabel = 'Part name or service description';
+      nameInput.value = name;
+      nameInput.setAttribute('list', 'presetSuggestions');
+
+      const priceInput = document.createElement('input');
+      priceInput.type = 'number';
+      priceInput.className = 'estimator-input estimator-price price-input';
+      priceInput.step = '0.01';
+      priceInput.min = '0';
+      priceInput.placeholder = 'តម្លៃ $';
+      priceInput.ariaLabel = 'Price';
+      priceInput.value = price;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'estimator-remove';
+      removeBtn.textContent = 'លុប';
+      removeBtn.addEventListener('click', () => {
+        row.remove();
+        updateTotals();
+      });
+
+      row.appendChild(nameInput);
+      row.appendChild(priceInput);
+      row.appendChild(removeBtn);
+      return row;
+    }
+
+    function getSelectedServices() {
+      return Array.from(estimatorRows.querySelectorAll('.estimator-row'))
+        .map(row => ({
+          name: row.querySelector('.estimator-name').value.trim(),
+          price: parseFloat(row.querySelector('.estimator-price').value) || 0
+        }))
+        .filter(item => item.name || item.price > 0);
+    }
+
+    function updateTotals() {
+      const priceInputs = estimatorRows.querySelectorAll('.price-input');
+      let total = 0;
+
+      priceInputs.forEach(input => {
+        const value = parseFloat(input.value);
+        if (!Number.isNaN(value)) {
+          total += value;
+        }
+      });
+
+      selectedServices = getSelectedServices();
+      estimateTotal.textContent = '$' + total.toFixed(2);
+      estimateTotalRiel.textContent = 'ឬសរុប៖ ' + (total * 4100).toLocaleString('en-US') + ' ៛';
+    }
+
+    addEstimatorRowBtn.addEventListener('click', () => {
+      estimatorRows.appendChild(createEstimatorRow());
+      updateTotals();
+    });
+
+    estimatorRows.addEventListener('input', updateTotals);
+    estimatorRows.addEventListener('change', updateTotals);
+    renderPresetSuggestions();
+    updateTotals();
+
+    // ── Payment panel (QR wallet for ABA/Acleda, cash notice for Cash) ──
+    const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
+    const qrPanel        = document.getElementById('qrPanel');
+    const cashPanel       = document.getElementById('cashPanel');
+    const qrManagerPanel = document.querySelector('.merchant-qr-manager');
+    const activeQrSelect  = document.getElementById('activeQrSelect');
+    const deleteQrAccountBtn = document.getElementById('deleteQrAccountBtn');
+    const toggleQrCreateBtn  = document.getElementById('toggleQrCreateBtn');
+    const qrCreatePanel   = document.getElementById('qrCreatePanel');
+    const qrCustomName    = document.getElementById('qrCustomName');
+    const qrFileInput     = document.getElementById('qrFileInput');
+    const saveQrBtn       = document.getElementById('saveQrBtn');
+    const qrSaveAlert     = document.getElementById('qrSaveAlert');
+    const qrPreviewImage  = document.getElementById('qrPreviewImage');
+    const qrPreviewCaption = document.getElementById('qrPreviewCaption');
+
+    let qrWallet = [];
+    let activeWalletType = 'ABA Bank';
+    let selectedQrProfileId = null;
+
+    function loadQrWallet() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY_QR_WALLET);
+        if (!stored) return [];
+        const parsed = JSON.parse(stored);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (_) {
+        return [];
+      }
+    }
+
+    function saveQrWallet(items) {
+      try {
+        localStorage.setItem(STORAGE_KEY_QR_WALLET, JSON.stringify(items));
+        qrWallet = items;
+      } catch (_) {}
+    }
+
+    function showQrAlert(message) {
+      qrSaveAlert.textContent = message;
+      qrSaveAlert.classList.add('visible');
+      window.clearTimeout(showQrAlert.timeout);
+      showQrAlert.timeout = window.setTimeout(() => {
+        qrSaveAlert.classList.remove('visible');
+      }, 2200);
+    }
+
+    function getWalletProfilesForType(type) {
+      return qrWallet.filter(profile => profile.type === type);
+    }
+
+    function getSelectedWalletProfile() {
+      if (!selectedQrProfileId) return null;
+      return qrWallet.find(profile => profile.id === selectedQrProfileId) || null;
+    }
+
+    function renderQrWalletSelect() {
+      const profiles = getWalletProfilesForType(activeWalletType);
+      activeQrSelect.innerHTML = '';
+
+      if (profiles.length === 0) {
+        const emptyOption = document.createElement('option');
+        emptyOption.value = '';
+        emptyOption.textContent = 'មិនទាន់មានគណនីដែលបានរក្សាទុក';
+        activeQrSelect.appendChild(emptyOption);
+        selectedQrProfileId = null;
+      } else {
+        if (!profiles.some(profile => profile.id === selectedQrProfileId)) {
+          selectedQrProfileId = profiles[0].id;
+        }
+
+        profiles.forEach(profile => {
+          const option = document.createElement('option');
+          option.value = profile.id;
+          option.textContent = profile.nickname || profile.type;
+          if (profile.id === selectedQrProfileId) option.selected = true;
+          activeQrSelect.appendChild(option);
+        });
+      }
+
+      activeQrSelect.value = selectedQrProfileId || '';
+      renderQrPreview();
+    }
+
+    function renderQrPreview() {
+      const profile = getSelectedWalletProfile();
+
+      if (profile && profile.imageData) {
+        qrPreviewImage.src = profile.imageData;
+        qrPreviewImage.style.display = 'block';
+        qrPreviewCaption.textContent = 'គណនី៖ ' + (profile.nickname || profile.type);
+      } else {
+        qrPreviewImage.style.display = 'none';
+        qrPreviewCaption.textContent = 'ជ្រើសរើស ឬបង្កើតគណនីថ្មី...';
+      }
+
+      if (profile && profile.imageData) {
+        qrPanel.classList.add('visible');
+        qrPanel.innerHTML =
+          '<div class="qr-image-wrap">' +
+            '<img src="' + profile.imageData + '" alt="' + (profile.nickname || activeWalletType) + ' QR Code">' +
+          '</div>' +
+          '<p>គណនី៖ ' + (profile.nickname || activeWalletType) + '</p>';
+      } else {
+        qrPanel.classList.remove('visible');
+      }
+    }
+
+    function updatePaymentPanel(method) {
+      const isCashMethod = method === 'Cash' || method === 'សាច់ប្រាក់';
+
+      if (isCashMethod) {
+        qrPanel.classList.remove('visible');
+        if (qrManagerPanel) {
+          qrManagerPanel.style.display = 'none';
+        }
+        cashPanel.classList.add('visible');
+        return;
+      }
+
+      cashPanel.classList.remove('visible');
+      if (qrManagerPanel) {
+        qrManagerPanel.style.display = 'block';
+      }
+      qrPanel.classList.add('visible');
+      activeWalletType = method;
+      qrWallet = loadQrWallet();
+      renderQrWalletSelect();
+    }
+
+    activeQrSelect.addEventListener('change', () => {
+      selectedQrProfileId = activeQrSelect.value;
+      renderQrPreview();
+    });
+
+    deleteQrAccountBtn.addEventListener('click', () => {
+      if (!selectedQrProfileId) {
+        showQrAlert('មិនមានគណនីដែលបានជ្រើសរើសក្នុងបច្ចុប្បន្នទេ។');
+        return;
+      }
+
+      qrWallet = qrWallet.filter(profile => profile.id !== selectedQrProfileId);
+      saveQrWallet(qrWallet);
+      selectedQrProfileId = getWalletProfilesForType(activeWalletType)[0] ? getWalletProfilesForType(activeWalletType)[0].id : null;
+      renderQrWalletSelect();
+      showQrAlert('បានលុបគណនីនេះដោយជោគជ័យ។');
+    });
+
+    toggleQrCreateBtn.addEventListener('click', () => {
+      qrCreatePanel.classList.toggle('visible');
+    });
+
+    saveQrBtn.addEventListener('click', () => {
+      const file = qrFileInput.files[0];
+      const customName = qrCustomName.value.trim();
+
+      if (!file || !customName) {
+        showQrAlert('សូមវាយឈ្មោះគណនី និងជ្រើសរើសរូបភាព QR មុននឹងរក្សាទុក។');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        const profile = {
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+          type: activeWalletType,
+          nickname: customName,
+          imageData: reader.result
+        };
+
+        qrWallet = [...qrWallet, profile];
+        saveQrWallet(qrWallet);
+        selectedQrProfileId = profile.id;
+        qrCustomName.value = '';
+        qrFileInput.value = '';
+        qrCreatePanel.classList.remove('visible');
+        renderQrWalletSelect();
+        showQrAlert('រក្សាទុកកូដស្កេនដោយជោគជ័យ!');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    paymentRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        if (radio.checked) updatePaymentPanel(radio.value);
+      });
+    });
+
+    // Initialize panel to match whichever payment option loads checked
+    updatePaymentPanel(document.querySelector('input[name="paymentMethod"]:checked').value);
+
+    // ── Emergency chat toggle ──
+    document.getElementById('chatToggle').addEventListener('click', () => {
+      document.getElementById('chatMenu').classList.toggle('open');
+    });
+
+    // ── Generate a simple invoice ID ──
+    function generateInvoiceId() {
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      return 'IAW-' + now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate())
+             + '-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+    }
+
+    // ── Form submission → localStorage ──
+    document.getElementById('intakeForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const formMsg = document.getElementById('formMsg');
+      const name    = document.getElementById('customerName').value.trim();
+      const phone   = document.getElementById('customerPhone').value.trim();
+      const model   = document.getElementById('carModel').value.trim();
+      const plate   = document.getElementById('plateNumber').value.trim().toUpperCase();
+      const label   = document.getElementById('workshopLabel').value.trim();
+      const payment = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+      if (!name || !phone || !model || !plate) {
+        formMsg.className = 'form-msg error';
+        formMsg.textContent = 'All fields are required.';
+        return;
+      }
+
+      selectedServices = getSelectedServices();
+      const total = selectedServices.reduce((sum, s) => sum + s.price, 0);
+      selectedServices.forEach(service => addPresetIfNeeded(service.name));
+      const selectedQrProfile = getSelectedWalletProfile();
+
+      // Build the repair order record
+      const repairOrder = {
+        invoiceId:     generateInvoiceId(),
+        date:          new Date().toISOString(),
+        customerName:  name,
+        customerPhone: phone,
+        carModel:      model,
+        plateNumber:   plate,
+        workshopLabel: label,
+        carParts:      selectedServices.map(s => s.name).filter(Boolean),
+        paymentMethod: payment,
+        totalBalance:  total,
+        qrNickname:    selectedQrProfile ? selectedQrProfile.nickname : '',
+        qrImageData:   selectedQrProfile ? selectedQrProfile.imageData : '',
+        qrType:        selectedQrProfile ? selectedQrProfile.type : payment,
+        status:        'intake'   // progress: intake → fixing → ready
+      };
+
+      /*
+        STEP 1 — Merge into the repairs array.
+        If a plate already has an active order, replace it (re-book).
+        Otherwise push a new entry.
+      */
+      let allRepairs = [];
+      try {
+        allRepairs = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL)) || [];
+      } catch (_) { allRepairs = []; }
+
+      const existingIdx = allRepairs.findIndex(r => r.plateNumber === plate);
+      if (existingIdx !== -1) {
+        allRepairs[existingIdx] = repairOrder;
+      } else {
+        allRepairs.push(repairOrder);
+      }
+
+      /*
+        STEP 1b / 2 — Actually write to localStorage.
+        This is wrapped in try/catch on purpose: if the browser
+        blocks storage (private/incognito mode, storage disabled,
+        or the page opened as a bare file:// document with no
+        server behind it), setItem() throws instead of failing
+        silently. Without this catch the button would look like
+        it did nothing, which is the exact bug being reported.
+      */
+      try {
+        localStorage.setItem(STORAGE_KEY_ALL, JSON.stringify(allRepairs));
+
+        // Save as the "current booking" so receipt.html can
+        // immediately display the latest invoice.
+        localStorage.setItem(STORAGE_KEY_LAST, JSON.stringify(repairOrder));
+        window.location.href = 'receipt.html';
+      } catch (err) {
+        formMsg.className = 'form-msg error';
+        formMsg.textContent = 'Could not save booking: your browser is blocking local storage '
+          + '(this happens in private/incognito mode, with storage disabled, or when the page '
+          + 'is opened directly as a file:// document instead of through a web server). '
+          + 'Try running the site through a local server and reload.';
+        console.error('localStorage save failed:', err);
+        return;
+      }
+
+      formMsg.className = 'form-msg success';
+      formMsg.textContent = 'Booking saved — Invoice ' + repairOrder.invoiceId
+        + '. Track on Dashboard or view Receipt.';
+
+      // Reset form fields but keep services selected
+      this.reset();
+      document.getElementById('payAba').checked = true;
+      updatePaymentPanel('ABA Bank');
+    });
+  </script>
+</body>
+</html>
