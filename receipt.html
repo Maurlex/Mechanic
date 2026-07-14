@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>យានដ្ឋានដើមមាស ១៦៨ — Invoice Receipt</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --charcoal: #1c1c1e;
+      --slate: #3a3a3c;
+      --slate-mid: #5c5c5e;
+      --steel: #d4d4d6;
+      --steel-light: #ececee;
+      --white: #f7f7f8;
+      --amber: #c47a00;
+      --border: 2px solid var(--slate);
+      --border-thin: 1px solid var(--slate-mid);
+    }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--charcoal);
+      color: var(--white);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .site-header {
+      border-bottom: var(--border);
+      background: var(--charcoal);
+    }
+
+    .header-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .logo-mark {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.75rem;
+      color: var(--amber);
+      border: 2px solid var(--amber);
+      padding: 0.1rem 0.45rem;
+      line-height: 1;
+    }
+
+    .logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--steel);
+      text-decoration: none;
+      padding: 0.5rem 1.25rem;
+      border: var(--border-thin);
+      border-left: none;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-links li:first-child a { border-left: var(--border-thin); }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: var(--amber);
+      color: var(--charcoal);
+      border-color: var(--amber);
+    }
+
+    .toolbar {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 0;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-print {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.75rem 1.75rem;
+      background: var(--amber);
+      color: var(--charcoal);
+      border: 2px solid var(--amber);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-print:hover {
+      background: transparent;
+      color: var(--amber);
+    }
+
+    .btn-back {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.75rem 1.25rem;
+      background: transparent;
+      color: var(--steel);
+      border: var(--border-thin);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-back:hover {
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .no-data-msg {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem 1.5rem;
+      border: var(--border);
+      text-align: center;
+      color: var(--slate-mid);
+    }
+
+    .no-data-msg a {
+      color: var(--amber);
+      text-decoration: none;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    /* ── Receipt Document ── */
+    .receipt-wrapper {
+      max-width: 800px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+
+    .receipt {
+      border: var(--border);
+      background: var(--white);
+      color: var(--charcoal);
+    }
+
+    .receipt-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      padding: 2rem;
+      border-bottom: var(--border);
+      background: var(--steel-light);
+    }
+
+    .receipt-brand h1 {
+      font-size: 1.75rem;
+      color: var(--charcoal);
+      margin-bottom: 0.25rem;
+    }
+
+    .receipt-brand p {
+      font-size: 0.85rem;
+      color: var(--slate-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .receipt-id-block {
+      text-align: right;
+    }
+
+    .receipt-id-block .label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--slate-mid);
+    }
+
+    .receipt-id-block .invoice-id {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.35rem;
+      color: var(--amber);
+    }
+
+    .receipt-id-block .invoice-date {
+      font-size: 0.9rem;
+      color: var(--slate);
+      margin-top: 0.25rem;
+    }
+
+    .receipt-body {
+      padding: 2rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: var(--border-thin);
+    }
+
+    .info-block .label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--slate-mid);
+      margin-bottom: 0.2rem;
+    }
+
+    .info-block .value {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .info-block .value.mono {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      text-transform: uppercase;
+    }
+
+    .info-block .value-sub {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--amber);
+      margin-top: 0.3rem;
+    }
+
+    /* ── Line Items Table ── */
+    .line-items {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+
+    .line-items th {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: left;
+      padding: 0.65rem 0.75rem;
+      background: var(--charcoal);
+      color: var(--steel);
+      border: var(--border-thin);
+    }
+
+    .line-items td {
+      padding: 0.65rem 0.75rem;
+      border: var(--border-thin);
+      font-size: 0.95rem;
+    }
+
+    .line-items tr:nth-child(even) td { background: var(--steel-light); }
+
+    .line-items .col-qty { width: 60px; text-align: center; }
+    .line-items .col-price { width: 100px; text-align: right; }
+
+    /* ── Totals ── */
+    .totals-block {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .totals-table {
+      width: 280px;
+      border-collapse: collapse;
+    }
+
+    .totals-table td {
+      padding: 0.5rem 0.75rem;
+      border: var(--border-thin);
+      font-size: 0.9rem;
+    }
+
+    .totals-table td:first-child {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.8rem;
+      color: var(--slate-mid);
+      background: var(--steel-light);
+    }
+
+    .totals-table td:last-child {
+      text-align: right;
+      font-weight: 500;
+    }
+
+    .totals-table .grand-total td {
+      background: var(--charcoal);
+      color: var(--white);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.15rem;
+      text-transform: uppercase;
+    }
+
+    .totals-table .grand-total td:last-child {
+      color: var(--amber);
+      font-size: 1.35rem;
+    }
+
+    .payment-block {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border: var(--border-thin);
+      background: var(--steel-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .payment-block .payment-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      min-width: 220px;
+    }
+
+    .payment-block .payment-qr-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      min-width: 180px;
+    }
+
+    .payment-block .payment-qr-panel img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      border: var(--border-thin);
+      background: var(--white);
+      padding: 0.35rem;
+      display: block;
+    }
+
+    .payment-block .payment-qr-panel .qr-caption {
+      font-size: 0.8rem;
+      color: var(--slate);
+      text-align: center;
+      max-width: 180px;
+      line-height: 1.3;
+    }
+
+    .payment-block .label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--slate-mid);
+    }
+
+    .payment-block .method {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      color: var(--charcoal);
+    }
+
+    .receipt-footer {
+      padding: 1.25rem 2rem;
+      border-top: var(--border);
+      background: var(--steel-light);
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--slate-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .site-footer {
+      border-top: var(--border);
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--slate-mid);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Print Styles ── */
+    @media print {
+      body { background: white; color: black; }
+      .site-header, .toolbar, .site-footer, .nav-links { display: none !important; }
+      .receipt-wrapper { margin: 0; padding: 0; max-width: 100%; }
+      .receipt { border: 1px solid #000; }
+      .receipt-header { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .line-items th { background: #333 !important; color: #ccc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .totals-table .grand-total td { background: #333 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    @media (max-width: 768px) {
+      .info-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-mark">168</span>
+        <span class="logo-text">យានដ្ឋានដើមមាស ១៦៨</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Book Repair</a></li>
+        <li><a href="dashboard.html">Track Status</a></li>
+        <li><a href="receipt.html" class="active">Receipt</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="toolbar" id="toolbar" style="display: none;">
+    <button class="btn-print" onclick="window.print()">Print Invoice</button>
+    <a href="dashboard.html" class="btn-back">Back to Tracker</a>
+    <a href="index.html" class="btn-back">New Booking</a>
+  </div>
+
+  <div class="no-data-msg" id="noDataMsg">
+    No booking data found. <a href="index.html">Submit an intake form</a> first.
+  </div>
+
+  <div class="receipt-wrapper" id="receiptWrapper" style="display: none;">
+    <div class="receipt" id="receiptDoc">
+
+      <div class="receipt-header">
+        <div class="receipt-brand">
+          <h1>យានដ្ឋានដើមមាស ១៦៨</h1>
+          <p>ខណ្ឌដង្កោ, ភ្នំពេញ (កូដទីតាំង៖ GV9W+VF ភ្នំពេញ) &mdash; សេវាកម្មជួសជុលរថយន្ត</p>
+          <p>ទូរស័ព្ទ៖ 015 282 896 / 092 282 896</p>
+        </div>
+        <div class="receipt-id-block">
+          <div class="label">Invoice ID</div>
+          <div class="invoice-id" id="rcptInvoiceId">—</div>
+          <div class="invoice-date" id="rcptDate">—</div>
+        </div>
+      </div>
+
+      <div class="receipt-body">
+
+        <div class="info-grid">
+          <div class="info-block">
+            <div class="label">Customer Name</div>
+            <div class="value" id="rcptCustomer">—</div>
+          </div>
+          <div class="info-block">
+            <div class="label">Phone</div>
+            <div class="value" id="rcptPhone">—</div>
+          </div>
+          <div class="info-block">
+            <div class="label">Vehicle</div>
+            <div class="value" id="rcptVehicle">—</div>
+          </div>
+          <div class="info-block">
+            <div class="label">Plate Number</div>
+            <div class="value mono" id="rcptPlate">—</div>
+            <div class="value-sub" id="rcptLabel"></div>
+          </div>
+        </div>
+
+        <table class="line-items">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Service / Part</th>
+              <th class="col-qty">Qty</th>
+              <th class="col-price">Amount</th>
+            </tr>
+          </thead>
+          <tbody id="rcptLineItems">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+
+        <div class="totals-block">
+          <table class="totals-table">
+            <tr>
+              <td>Subtotal</td>
+              <td id="rcptSubtotal">$0.00</td>
+            </tr>
+            <tr>
+              <td>Tax (0%)</td>
+              <td>$0.00</td>
+            </tr>
+            <tr class="grand-total">
+              <td>Total Balance</td>
+              <td id="rcptTotal">$0.00</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="payment-block">
+          <div class="payment-meta">
+            <div>
+              <div class="label">Payment Method</div>
+              <div class="method" id="rcptPayment">—</div>
+            </div>
+            <div>
+              <div class="label">Status</div>
+              <div class="method" id="rcptStatus">—</div>
+            </div>
+          </div>
+          <div class="payment-qr-panel" id="paymentQrPanel">
+            <img id="paymentQrImage" alt="Merchant QR Code" style="display: none;">
+            <div class="qr-caption" id="paymentQrCaption">មិនទាន់មានរូបភាពកូដស្កេន / No QR Code Configured</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="receipt-footer">
+        សូមអរគុណសម្រាប់ការជ្រើសរើស យានដ្ឋានដើមមាស ១៦៨។ សូមរក្សាទុកវិក្កយបត្រនេះសម្រាប់ផ្ទៀងផ្ទាត់។
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    Ironclad Auto Works &mdash; Licensed Mechanical Repair &mdash; Est. 2008
+  </footer>
+
+  <script>
+    /* ══════════════════════════════════════════════════════════════
+       DATA FLOW: localStorage → receipt.html
+       ══════════════════════════════════════════════════════════════
+
+       index.html saves the most recent booking to the key
+       "ironclad_currentBooking". This page reads that object on load
+       and populates every field on the printable invoice:
+
+         - invoiceId      → Invoice ID header
+         - date           → Invoice date
+         - plateNumber    → Plate Number field
+         - carParts[]     → Line items table
+         - paymentMethod  → Payment Method block
+         - totalBalance   → Total Balance row
+
+       The dashboard admin status updates also sync back to
+       "ironclad_currentBooking" when the plate matches, so the
+       receipt Status field reflects the latest repair stage.
+
+       No server, no query strings — pure localStorage persistence.
+    ══════════════════════════════════════════════════════════════ */
+
+    const STORAGE_KEY_LAST = 'ironclad_currentBooking';
+    const STORAGE_KEY_ALL  = 'ironclad_activeRepairs';
+
+    function getQrStorageKey(bankType) {
+      return 'dm168_stored_qr_' + bankType;
+    }
+
+    // Service price lookup (matches index.html estimator grid)
+    const SERVICE_PRICES = {
+      'Oil Change':          35,
+      'Brake Pads':         120,
+      'Tire Rotation':       25,
+      'Battery Replace':    150,
+      'AC Recharge':         80,
+      'Alignment':           90,
+      'Transmission Flush': 180,
+      'Diagnostic Scan':     60
+    };
+
+    function formatMoney(amount) {
+      return '$' + parseFloat(amount).toFixed(2);
+    }
+
+    function formatDate(iso) {
+      return new Date(iso).toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    function getQueryParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+
+    function loadBooking() {
+      /*
+        Priority 1: a ?plate=XXXX URL param — pulls that exact vehicle's
+        record out of "ironclad_activeRepairs" (the full history), so any
+        past receipt can be reopened, not just the most recent one.
+        If a plate is given but no matching record exists, we deliberately
+        return null instead of falling through to "currentBooking" — showing
+        a different customer's invoice on a wrong/stale link would be worse
+        than a clear "no data" message.
+
+        Priority 2 (no plate param): read "ironclad_currentBooking" (last
+        submitted form) — the original single-record behavior.
+        Priority 3: fall back to the last entry in "ironclad_activeRepairs".
+      */
+      const plateParam = getQueryParam('plate');
+
+      if (plateParam) {
+        try {
+          const all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL)) || [];
+          const normalized = plateParam.trim().toUpperCase();
+          return all.find(r => r.plateNumber === normalized) || null;
+        } catch (_) {
+          return null;
+        }
+      }
+
+      try {
+        const current = JSON.parse(localStorage.getItem(STORAGE_KEY_LAST));
+        if (current && current.invoiceId) return current;
+      } catch (_) { /* continue */ }
+
+      try {
+        const all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL)) || [];
+        if (all.length > 0) return all[all.length - 1];
+      } catch (_) { /* continue */ }
+
+      return null;
+    }
+
+    function renderReceipt(booking) {
+      document.getElementById('rcptInvoiceId').textContent = booking.invoiceId;
+      document.getElementById('rcptDate').textContent        = formatDate(booking.date);
+      document.getElementById('rcptCustomer').textContent    = booking.customerName;
+      document.getElementById('rcptPhone').textContent       = booking.customerPhone;
+      document.getElementById('rcptVehicle').textContent     = booking.carModel;
+      document.getElementById('rcptPlate').textContent       = booking.plateNumber;
+      document.getElementById('rcptLabel').textContent       = booking.workshopLabel ? ('📍 ' + booking.workshopLabel) : '';
+      document.getElementById('rcptPayment').textContent     = booking.paymentMethod;
+      document.getElementById('rcptStatus').textContent    = (booking.status || 'intake').toUpperCase();
+
+      const paymentMethod = booking.paymentMethod || 'ABA Bank';
+      const qrImage = document.getElementById('paymentQrImage');
+      const qrCaption = document.getElementById('paymentQrCaption');
+      const qrImageData = booking.qrImageData || booking.paymentQrImageData || booking.qrAccountImageData || '';
+      const qrNickname = booking.qrNickname || booking.paymentQrNickname || booking.qrAccountNickname || '';
+
+      if (qrImageData) {
+        qrImage.src = qrImageData;
+        qrImage.style.display = 'block';
+        qrCaption.textContent = 'គណនី៖ ' + (qrNickname || paymentMethod);
+      } else {
+        qrImage.style.display = 'none';
+        qrCaption.textContent = 'មិនទាន់មានរូបភាពកូដស្កេន / No QR Code Configured';
+      }
+
+      const tbody = document.getElementById('rcptLineItems');
+      tbody.innerHTML = '';
+
+      const parts = booking.carParts || [];
+
+      if (parts.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td>1</td><td>General Service (no items selected)</td><td class="col-qty">1</td><td class="col-price">' + formatMoney(0) + '</td>';
+        tbody.appendChild(tr);
+      } else {
+        parts.forEach((part, i) => {
+          const price = SERVICE_PRICES[part] || 0;
+          const tr = document.createElement('tr');
+          tr.innerHTML =
+            '<td>' + (i + 1) + '</td>' +
+            '<td>' + part + '</td>' +
+            '<td class="col-qty">1</td>' +
+            '<td class="col-price">' + formatMoney(price) + '</td>';
+          tbody.appendChild(tr);
+        });
+      }
+
+      const total = booking.totalBalance || 0;
+      document.getElementById('rcptSubtotal').textContent = formatMoney(total);
+      document.getElementById('rcptTotal').textContent    = formatMoney(total);
+
+      document.getElementById('noDataMsg').style.display      = 'none';
+      document.getElementById('receiptWrapper').style.display = 'block';
+      document.getElementById('toolbar').style.display        = 'flex';
+    }
+
+    // ── On page load, pull booking from localStorage and render ──
+    const booking = loadBooking();
+    if (booking) {
+      renderReceipt(booking);
+    } else {
+      const plateParam = getQueryParam('plate');
+      if (plateParam) {
+        document.getElementById('noDataMsg').innerHTML =
+          'No saved record found for plate <strong>' + plateParam.toUpperCase() + '</strong>. ' +
+          '<a href="dashboard.html">Check the tracker</a> or <a href="index.html">submit an intake form</a>.';
+      }
+    }
+  </script>
+</body>
+</html>
