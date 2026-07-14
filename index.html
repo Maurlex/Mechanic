@@ -1005,91 +1005,41 @@
       activePresetInput = null;
     }
 
-    function renderPresetSuggestions(targetInput = null) {
-      if (activePresetPanel) {
-        activePresetPanel.remove();
-      }
-
-      if (!targetInput) {
-        activePresetInput = null;
-        activePresetPanel = null;
-        return;
-      }
-
+    function renderPresetSuggestions(inputEl = null) {
       const merged = [...new Set([...PRESET_SUGGESTIONS, ...getStoredPresets()])];
-      const customPresets = getStoredPresets();
-      const panel = document.createElement('div');
-      panel.style.position = 'fixed';
-      panel.style.zIndex = '2000';
-      panel.style.background = 'var(--slate)';
-      panel.style.border = '1px solid var(--slate-mid)';
-      panel.style.boxShadow = '0 10px 24px rgba(0,0,0,0.3)';
-      panel.style.maxHeight = '220px';
-      panel.style.overflowY = 'auto';
-      panel.style.padding = '0.25rem 0';
-      panel.style.minWidth = '220px';
-
-      const rect = targetInput.getBoundingClientRect();
-      panel.style.left = rect.left + window.scrollX + 'px';
-      panel.style.top = rect.bottom + window.scrollY + 4 + 'px';
-      panel.style.width = Math.max(rect.width, 220) + 'px';
-
+      presetSuggestions.innerHTML = '';
       merged.forEach(value => {
-        const row = document.createElement('button');
-        row.type = 'button';
-        row.style.display = 'flex';
-        row.style.alignItems = 'center';
-        row.style.justifyContent = 'space-between';
-        row.style.width = '100%';
-        row.style.padding = '0.55rem 0.75rem';
-        row.style.border = 'none';
-        row.style.background = 'transparent';
-        row.style.color = 'var(--white)';
-        row.style.textAlign = 'left';
-        row.style.cursor = 'pointer';
-        row.style.fontFamily = 'Barlow, sans-serif';
-        row.style.fontSize = '0.92rem';
-
-        const label = document.createElement('span');
-        label.textContent = value;
-        row.appendChild(label);
-
-        if (customPresets.includes(value)) {
-          const removeBtn = document.createElement('span');
-          removeBtn.textContent = '×';
-          removeBtn.style.color = 'var(--amber)';
-          removeBtn.style.fontSize = '1rem';
-          removeBtn.style.fontWeight = '700';
-          removeBtn.style.marginLeft = '0.75rem';
-          removeBtn.style.cursor = 'pointer';
-          removeBtn.addEventListener('click', event => {
-            event.stopPropagation();
-            const updated = customPresets.filter(item => item !== value);
-            savePresets(updated);
-            renderPresetSuggestions(targetInput);
-          });
-          row.appendChild(removeBtn);
-        }
-
-        row.addEventListener('click', () => {
-          targetInput.value = value;
-          updateTotals();
-          closePresetSuggestions();
-        });
-
-        row.addEventListener('mouseenter', () => {
-          row.style.background = 'var(--slate-mid)';
-        });
-        row.addEventListener('mouseleave', () => {
-          row.style.background = 'transparent';
-        });
-
-        panel.appendChild(row);
+        const option = document.createElement('option');
+        option.value = value;
+        presetSuggestions.appendChild(option);
       });
+      
+      if (inputEl) {
+        activePresetInput = inputEl;
+      }
+      
+      let listContainer = document.getElementById('presetItemsList');
+      if (!listContainer) {
+        const grid = document.getElementById('estimatorGrid');
+        const section = document.createElement('div');
+        section.innerHTML = '<h4 style="font-size:0.85rem; margin:1rem 0 0.5rem; color:var(--text-secondary);">លុបបញ្ជីសេវាកម្ម / Delete Presets:</h4><div id="presetItemsList" style="display:flex; flex-wrap:wrap; gap:0.5rem;"></div>';
+        grid.appendChild(section);
+        listContainer = document.getElementById('presetItemsList');
+      }
+      
+      listContainer.innerHTML = '';
+      getStoredPresets().forEach(value => {
+        const badge = document.createElement('span');
+        badge.style = 'background:#fee2e2; color:#b91c1c; padding:0.35rem 0.65rem; border-radius:8px; font-size:0.9rem; display:inline-flex; align-items:center; font-weight:500; border:1px solid #fca5a5;';
+        badge.innerHTML = value + '<span style="margin-left:8px; cursor:pointer; font-weight:bold; color:#ef4444;" onclick="window.deletePreset(\''+value.replace(/'/g, "\\'")+'\')">×</span>';
+        listContainer.appendChild(badge);
+      });
+    }
 
-      document.body.appendChild(panel);
-      activePresetPanel = panel;
-      activePresetInput = targetInput;
+    window.deletePreset = function(value) {
+      const updated = getStoredPresets().filter(item => item !== value);
+      savePresets(updated);
+      renderPresetSuggestions(activePresetInput);
     }
 
     function addPresetIfNeeded(value) {
