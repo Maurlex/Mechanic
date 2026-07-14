@@ -1338,9 +1338,13 @@
     updatePaymentPanel(document.querySelector('input[name="paymentMethod"]:checked').value);
 
     // ── Emergency chat toggle ──
-    document.getElementById('chatToggle').addEventListener('click', () => {
-      document.getElementById('chatMenu').classList.toggle('open');
-    });
+    const chatToggleBtn = document.getElementById('chatToggle');
+    const chatMenuEl = document.getElementById('chatMenu');
+    if (chatToggleBtn && chatMenuEl) {
+      chatToggleBtn.addEventListener('click', () => {
+        chatMenuEl.classList.toggle('open');
+      });
+    }
 
     // ── Generate a simple invoice ID ──
     function generateInvoiceId() {
@@ -1355,25 +1359,31 @@
       e.preventDefault();
 
       const formMsg = document.getElementById('formMsg');
+      
       const name    = document.getElementById('customerName').value.trim();
       const phone   = document.getElementById('customerPhone').value.trim();
       const model   = document.getElementById('carModel').value.trim();
-      const plate   = document.getElementById('plateNumber').value.trim().toUpperCase();
+      const plate   = document.getElementById('plateNumber').value.trim().toUpperCase(); 
       const label   = document.getElementById('workshopLabel').value.trim();
       const payment = document.querySelector('input[name="paymentMethod"]:checked').value;
 
       if (!name || !phone || !model || !plate) {
         formMsg.className = 'form-msg error';
-        formMsg.textContent = 'All fields are required.';
+        formMsg.textContent = 'សូមបំពេញព័ត៌មានដែលត្រូវការទាំងអស់ / All fields are required.';
         return;
       }
 
-      selectedServices = getSelectedServices();
-      const total = selectedServices.reduce((sum, s) => sum + s.price, 0);
-      selectedServices.forEach(service => addPresetIfNeeded(service.name));
+      const currentServices = Array.from(document.querySelectorAll('#estimatorRows .estimator-row'))
+        .map(row => ({
+          name: row.querySelector('.estimator-name').value.trim(),
+          price: parseFloat(row.querySelector('.estimator-price').value) || 0
+        }))
+        .filter(item => item.name || item.price > 0);
+
+      const total = currentServices.reduce((sum, s) => sum + s.price, 0);
+      currentServices.forEach(service => addPresetIfNeeded(service.name));
       const selectedQrProfile = getSelectedWalletProfile();
 
-      // Build the repair order record
       const repairOrder = {
         invoiceId:     generateInvoiceId(),
         date:          new Date().toISOString(),
@@ -1382,20 +1392,15 @@
         carModel:      model,
         plateNumber:   plate,
         workshopLabel: label,
-        carParts:      selectedServices.map(s => s.name).filter(Boolean),
+        carParts:      currentServices.map(s => s.name).filter(Boolean),
         paymentMethod: payment,
         totalBalance:  total,
         qrNickname:    selectedQrProfile ? selectedQrProfile.nickname : '',
         qrImageData:   selectedQrProfile ? selectedQrProfile.imageData : '',
         qrType:        selectedQrProfile ? selectedQrProfile.type : payment,
-        status:        'intake'   // progress: intake → fixing → ready
+        status:        'intake'
       };
 
-      /*
-        STEP 1 — Merge into the repairs array.
-        If a plate already has an active order, replace it (re-book).
-        Otherwise push a new entry.
-      */
       let allRepairs = [];
       try {
         allRepairs = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL)) || [];
@@ -1408,40 +1413,16 @@
         allRepairs.push(repairOrder);
       }
 
-      /*
-        STEP 1b / 2 — Actually write to localStorage.
-        This is wrapped in try/catch on purpose: if the browser
-        blocks storage (private/incognito mode, storage disabled,
-        or the page opened as a bare file:// document with no
-        server behind it), setItem() throws instead of failing
-        silently. Without this catch the button would look like
-        it did nothing, which is the exact bug being reported.
-      */
       try {
         localStorage.setItem(STORAGE_KEY_ALL, JSON.stringify(allRepairs));
-
-        // Save as the "current booking" so receipt.html can
-        // immediately display the latest invoice.
         localStorage.setItem(STORAGE_KEY_LAST, JSON.stringify(repairOrder));
         window.location.href = 'receipt.html';
       } catch (err) {
         formMsg.className = 'form-msg error';
-        formMsg.textContent = 'Could not save booking: your browser is blocking local storage '
-          + '(this happens in private/incognito mode, with storage disabled, or when the page '
-          + 'is opened directly as a file:// document instead of through a web server). '
-          + 'Try running the site through a local server and reload.';
+        formMsg.textContent = 'Storage Error: Try turning off Private/Incognito mode.';
         console.error('localStorage save failed:', err);
         return;
       }
-
-      formMsg.className = 'form-msg success';
-      formMsg.textContent = 'Booking saved — Invoice ' + repairOrder.invoiceId
-        + '. Track on Dashboard or view Receipt.';
-
-      // Reset form fields but keep services selected
-      this.reset();
-      document.getElementById('payAba').checked = true;
-      updatePaymentPanel('ABA Bank');
     });
   </script>
 </body>

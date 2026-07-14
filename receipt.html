@@ -668,41 +668,23 @@
     }
 
     function loadBooking() {
-      /*
-        Priority 1: a ?plate=XXXX URL param — pulls that exact vehicle's
-        record out of "ironclad_activeRepairs" (the full history), so any
-        past receipt can be reopened, not just the most recent one.
-        If a plate is given but no matching record exists, we deliberately
-        return null instead of falling through to "currentBooking" — showing
-        a different customer's invoice on a wrong/stale link would be worse
-        than a clear "no data" message.
-
-        Priority 2 (no plate param): read "ironclad_currentBooking" (last
-        submitted form) — the original single-record behavior.
-        Priority 3: fall back to the last entry in "ironclad_activeRepairs".
-      */
       const plateParam = getQueryParam('plate');
-
       if (plateParam) {
         try {
           const all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL)) || [];
           const normalized = plateParam.trim().toUpperCase();
-          return all.find(r => r.plateNumber === normalized) || null;
-        } catch (_) {
-          return null;
-        }
+          const found = all.find(r => r.plateNumber === normalized);
+          if (found) return found;
+        } catch (_) {}
       }
-
       try {
         const current = JSON.parse(localStorage.getItem(STORAGE_KEY_LAST));
         if (current && current.invoiceId) return current;
-      } catch (_) { /* continue */ }
-
+      } catch (_) {}
       try {
         const all = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL)) || [];
         if (all.length > 0) return all[all.length - 1];
-      } catch (_) { /* continue */ }
-
+      } catch (_) {}
       return null;
     }
 
